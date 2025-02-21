@@ -47,5 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
                 echo json_encode($records);
                 $conn->close();
+                
             }
 ?>
