@@ -33,15 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
             $sql= "INSERT INTO prenotazioni VALUES (null, '$id_utente', '$id_postazione', '$data')";
             $result=$conn->query($sql);
 
-                $records = [];
 
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        $records[] = $row;
-                    }
-                }
-
-                echo json_encode($records);
+                echo json_encode(['stato' => 'OK']);
                 $conn->close();
             }
 ?>
