@@ -41,4 +41,7 @@ dato id_utente e nuova password impostare la nuova password
 date le informazioni della prenotazione aggiungerla (n modifiche e flag sempre partenti da 0)
 date info utente aggiungerlo
 
+
+PROVO A FARE UNA COMMIT!
+
 */
