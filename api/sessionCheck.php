@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
             session_start();//apro la sessione
 
             if( $_SESSION['controlCode'] != $controlCode){  //esegue il controllo solo se il controlCode è corretto
-                $response = ['alive' => 'errore1'];
+                $response = ['alive' => 'errore'];
                 echo json_encode($response);
                 session_unset(); // rimuovo tutte le variabili di sessione
                 session_destroy();//RIP sessione
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
             }
 
             if(!isset($_SESSION['id']) || !isset($_SESSION['scadenza'])){
-                $response = ['alive' => 'errore2'];
+                $response = ['alive' => 'errore'];
                 echo json_encode($response);
                 session_unset(); // rimuovo tutte le variabili di sessione
                 session_destroy();//RIP sessione
