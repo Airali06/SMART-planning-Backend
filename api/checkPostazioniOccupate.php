@@ -18,27 +18,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
         $conn=new mysqli("localhost","root","","z-planning_db");
         $rawData = file_get_contents("php://input");
         $dati = json_decode($rawData, true);
-        $id_postazione = $dati['id_postazione'];
         $data = $dati['data']; 
 
-        if($conn->error) {
+
+        if($conn->connect_error) {
             echo json_encode(['errore' => 'nessunrisultato']);
             die();
         }
         else {
 
-            $sql="SELECT id_prenotazione FROM prenotazione WHERE data = '$data', id_postazione = '$id_postazione'";
+            $sql="SELECT id_postazione FROM prenotazioni WHERE data = '$data'";
             $result=$conn->query($sql);
 
                 $records = [];
 
                 if ($result->num_rows > 0) {
-                    echo json_encode(['stato' => 'occupata']);
-                    die();
-                }else{
-                    echo json_encode(['stato' => 'libera']);
-                    die();
+
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            $records[] = $row;
+                        }
+                    }
+
                 }
+                echo json_encode($records);
                 $conn->close();
 
 }
