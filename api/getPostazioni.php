@@ -33,6 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
                     while ($row = $result->fetch_assoc()) {
                         $records[] = $row;
                     }
+                }else {
+                    // Se non ci sono risultati
+                    echo json_encode(['errore' => 'Nessuna postazione trovata']);
                 }
                 echo json_encode($records);
                 $conn->close();
