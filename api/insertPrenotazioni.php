@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
             $id_utente = $dati['id_utente'];
             $id_postazione = $dati['id_postazione'];
             $data = $dati['data'];
-            $sql= "INSERT INTO prenotazioni VALUES (null, '$id_utente', '$id_postazione', '$data')";
+            $sql= "INSERT INTO prenotazioni (id_utente, id_postazione, data, n_modifiche, flag) VALUES ('$id_utente', '$id_postazione', '$data', 0 , 0)";
             $result=$conn->query($sql);
 
 
