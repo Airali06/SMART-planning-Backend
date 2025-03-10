@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
             $data = json_decode($rawData, true);
             $id_utente = $data['id_utente'];
 
-            $sql="SELECT id_prenotazione, id_utente, id_postazione, data, n_modifiche, flag FROM prenotazioni WHERE id_utente='$id_utente'";
+            $sql="SELECT id_prenotazione, id_utente, id_postazione, data, n_modifiche, flag FROM prenotazioni WHERE id_utente='$id_utente' ORDER BY data DESC";
             $result=$conn->query($sql);
 
                 $records = [];
