@@ -2,7 +2,7 @@
 header("Access-Control-Allow-Origin: *"); // Permette richieste da qualsiasi dominio (*), cambialo per sicurezza
 header("Access-Control-Allow-Methods:  POST, OPTIONS"); // Metodi consentiti
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With"); // Header consentiti
-header("Access-Control-Allow-Credentials: true"); 
+header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
 // Pulisce il buffer senza inviarlo
 ob_start();
@@ -13,29 +13,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit; // Rispondi subito per le richieste preflight
 }
 
-        $conn=new mysqli("localhost","root","","z-planning_db");
-              
 
-        if($conn->error) {
-            echo json_encode(['errore' => 'nessunrisultato']);
-            die();
-        }
-        else {
 
-            //prende i dati mandati dal client
-            $rawData = file_get_contents("php://input");
-            $dati = json_decode($rawData, true);
-            $id_prenotazione = $dati['id_prenotazione'];
-            $data = $dati['data'];
-            $id_postazione = $dati['id_postazione'];
-            $n_modifiche = $dati['n_modifiche'];
-            $n_modifiche++;
+$conn = new mysqli("localhost", "root", "", "z-planning_db");
 
-            $sql="UPDATE prenotazioni SET data='$dati', id_postazione='$id_postazione', n_modifiche = '$n_modifiche' WHERE id_prenotazione='$id_prenotazione'";
-            $result=$conn->query($sql);
 
-            echo json_encode(['stato' => 'OK']);
-                $conn->close();
-            }
+if ($conn->connect_error) {
+    echo json_encode(['errore' => 'nessunrisultato']);
+    die();
+} else {
+
+
+    $rawData = file_get_contents("php://input");
+    $dati = json_decode($rawData, true);
+
+    if (!$dati) {
+        echo json_encode(['errore' => 'Dati non validi']);
+        die();
+    }
+
+    $id_prenotazione = $dati['id_prenotazione'];
+    $id_postazione = $dati['id_postazione'];
+    $data = $dati['data'];
+    $n_modifiche = (int) $dati['n_modifiche']; //contatore arriva non ancora incrementato
+    $n_modifiche++;
+
+    $sql = "UPDATE prenotazioni SET 
+            id_postazione = '$id_postazione', 
+            data = '$data', 
+            n_modifiche = '$n_modifiche'
+        WHERE id_prenotazione = '$id_prenotazione'";
+
+
+
+    $result = $conn->query($sql);
+
+    echo json_encode(['stato' => 'OK']);
+    $conn->close();
+}
 ?>
-
