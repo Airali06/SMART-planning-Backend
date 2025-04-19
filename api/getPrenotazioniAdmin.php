@@ -13,9 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit; // Rispondi subito per le richieste preflight
 }
 
-$rawData = file_get_contents("php://input");
-$data = json_decode($rawData, true);
-$id_coordinatore = $data['id_coordinatore'];
+
 
 $conn = new mysqli("localhost", "root", "", "z-planning_db");
 
@@ -26,9 +24,15 @@ if ($conn->error) {
 } else {
 
 
-    $sql = "SELECT livello FROM utenti WHERE id_utente = '$id_coordinatore'";
+    $rawData = file_get_contents("php://input");
+    $data = json_decode($rawData, true);
+    $id_utente = $data['id_utente'];
+
+
+
+    //----------------- CONTROLLO AUTORIZZAZIONI
+    $sql = "SELECT livello FROM utenti WHERE id_utente='$id_utente'";
     $result = $conn->query($sql);
-    $row = $result->fetch_assoc();
 
 
     if ($result->num_rows == 0) {
@@ -36,17 +40,19 @@ if ($conn->error) {
         die();
     }
 
-    $livello = $row['livello'];
+    $row = $result->fetch_assoc();
+    $livello = $row["livello"];
 
-    if ($livello + "" == "3") {
-        $sql = "SELECT id_utente,nome,cognome,username,livello,id_coordinatore FROM utenti";
-    } else {
-        $sql = "SELECT id_utente,nome,cognome,username,livello,id_coordinatore FROM utenti WHERE id_coordinatore= '$id_coordinatore'";
+    if ($livello + "" != 3) {
+        json_encode(['errore' => 'autorizzazioni insufficienti']);
+        die();
     }
+    //-----------------------------------------
 
 
-
+    $sql = "SELECT id_prenotazione, id_utente, id_postazione, data, n_modifiche, flag FROM prenotazioni ORDER BY data DESC";
     $result = $conn->query($sql);
+
     $records = [];
 
     if ($result->num_rows > 0) {
@@ -54,8 +60,8 @@ if ($conn->error) {
             $records[] = $row;
         }
     }
+
     echo json_encode($records);
     $conn->close();
-
 }
 ?>
