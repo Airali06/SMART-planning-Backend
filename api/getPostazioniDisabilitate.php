@@ -23,18 +23,20 @@ if ($conn->error) {
     die();
 } else {
 
-    //prende i dati mandati dal client
-    $rawData = file_get_contents("php://input");
-    $data = json_decode($rawData, true);
-    $id_postazione = $data['id_postazione'];
-
-    $sql = "UPDATE postazioni SET stato = 1 WHERE id_postazione='$id_postazione'";
+    $sql = "SELECT id_postazione FROM postazioni WHERE stato = 1";
     $result = $conn->query($sql);
 
-    $sql = "UPDATE prenotazioni SET flag = 2 WHERE id_postazione='$id_postazione' and flag = 0";
-    $result = $conn->query($sql);
+    $records = [];
 
-    echo json_encode(['stato' => 'OK']);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $records[] = $row;
+        }
+    } else {
+        // Se non ci sono risultati
+        echo json_encode(['errore' => 'Nessuna postazione trovata']);
+    }
+    echo json_encode($records);
     $conn->close();
+
 }
-?>

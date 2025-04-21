@@ -31,6 +31,9 @@ if ($conn->error) {
     $sql = "UPDATE postazioni SET stato = 0 WHERE id_postazione='$id_postazione'";
     $result = $conn->query($sql);
 
+    $sql = "UPDATE prenotazioni SET flag = 0 WHERE id_postazione='$id_postazione' and flag = 2";
+    $result = $conn->query($sql);
+
     echo json_encode(['stato' => 'OK']);
     $conn->close();
 }
