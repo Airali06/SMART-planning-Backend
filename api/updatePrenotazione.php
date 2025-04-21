@@ -41,7 +41,7 @@ if ($conn->connect_error) {
     $sql = "UPDATE prenotazioni SET 
             id_postazione = '$id_postazione', 
             data = '$data', 
-            n_modifiche = '$n_modifiche'
+            n_modifiche = '$n_modifiche', flag = 0
         WHERE id_prenotazione = '$id_prenotazione'";
 
 
