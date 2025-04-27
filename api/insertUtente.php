@@ -2,7 +2,7 @@
 header("Access-Control-Allow-Origin: *"); // Permette richieste da qualsiasi dominio (*), cambialo per sicurezza
 header("Access-Control-Allow-Methods:  POST, OPTIONS"); // Metodi consentiti
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With"); // Header consentiti
-header("Access-Control-Allow-Credentials: true"); 
+header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
 // Pulisce il buffer senza inviarlo
 ob_start();
@@ -15,38 +15,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 
 
-        $conn=new mysqli("localhost","root","","z-planning_db");
-              
-
-        if($conn->error) {
-            echo json_encode(['errore' => 'nessunrisultato']);
-            die();
-        }
-        else {
+$conn = new mysqli("localhost", "root", "", "z-planning_db");
 
 
-            $rawData = file_get_contents("php://input");
-            $dati = json_decode($rawData, true);
-            
-            $nome = $dati['nome'];
-            $cognome = $dati['cognome'];
-            $username = $dati['username'];
-            $password = $dati['password'];
-            $livello = $dati['livello'];
-            $id_coordinatore = $dati['id_coordinatore'];
-            $sql= "INSERT INTO utenti VALUES (null, '$nome', '$cognome', '$username', '$password', '$livello', '$id_coordinatore')";
-            $result=$conn->query($sql);
+if ($conn->error) {
+    echo json_encode(['errore' => 'nessunrisultato']);
+    die();
+} else {
 
-                $records = [];
 
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        $records[] = $row;
-                    }
-                }
+    $rawData = file_get_contents("php://input");
+    $dati = json_decode($rawData, true);
 
-                echo json_encode($records);
-                $conn->close();
-                
-            }
+    $nome = $dati['nome'];
+    $cognome = $dati['cognome'];
+    $username = $dati['username'];
+    $password = $dati['password'];
+    $livello = $dati['livello'];
+    $id_coordinatore = $dati['id_coordinatore'];
+    $sql = "INSERT INTO utenti VALUES (null, '$nome', '$cognome', '$username', '$password', '$livello', '$id_coordinatore')";
+    $result = $conn->query($sql);
+
+    echo json_encode($records);
+    $conn->close();
+
+}
 ?>
