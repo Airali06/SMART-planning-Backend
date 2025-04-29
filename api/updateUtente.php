@@ -13,9 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit; // Rispondi subito per le richieste preflight
 }
 
-$rawData = file_get_contents("php://input");
-$data = json_decode($rawData, true);
-$id_coordinatore = $data['id_coordinatore'];
+
 
 $conn = new mysqli("localhost", "root", "", "z-planning_db");
 
@@ -26,34 +24,19 @@ if ($conn->error) {
 } else {
 
 
-    $sql = "SELECT livello FROM utenti WHERE id_utente = '$id_coordinatore'";
+    $rawData = file_get_contents("php://input");
+    $dati = json_decode($rawData, true);
+
+    $nome = $dati['nome'];
+    $cognome = $dati['cognome'];
+    $genere = $dati['genere'];
+    $username = $dati['username'];
+    $password = $dati['password'];
+    $livello = $dati['livello'];
+    $id_coordinatore = $dati['id_coordinatore'];
+    $sql = "UPDATE utenti SET nome =  '$nome', cognome =  '$cognome', genere =  '$genere', username = '$username', password = '$password', livello = '$livello', id_coordinatore =  '$id_coordinatore'";
     $result = $conn->query($sql);
-    $row = $result->fetch_assoc();
 
-
-    if ($result->num_rows == 0) {
-        echo json_encode(['errore' => 'nessunrisultato']);
-        die();
-    }
-
-    $livello = $row['livello'];
-
-    if ($livello + "" == "3") {
-        $sql = "SELECT id_utente,nome,cognome,genere,username,livello,id_coordinatore FROM utenti";
-    } else {
-        $sql = "SELECT id_utente,nome,cognome,genere,username,livello,id_coordinatore FROM utenti WHERE id_coordinatore= '$id_coordinatore'";
-    }
-
-
-
-    $result = $conn->query($sql);
-    $records = [];
-
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $records[] = $row;
-        }
-    }
     echo json_encode($records);
     $conn->close();
 
