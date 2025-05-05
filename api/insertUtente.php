@@ -34,7 +34,13 @@ if ($conn->error) {
     $password = $dati['password'];
     $livello = $dati['livello'];
     $id_coordinatore = $dati['id_coordinatore'];
-    $sql = "INSERT INTO utenti VALUES (null, '$nome', '$cognome', '$genere', '$username', '$password', '$livello', '$id_coordinatore')";
+
+    $sql = "INSERT INTO utenti (
+        nome, cognome, genere, username, password, livello, id_coordinatore
+    ) VALUES (
+        '$nome', '$cognome', '$genere', '$username', '$password', '$livello', '$id_coordinatore'
+    )";
+
     $result = $conn->query($sql);
 
     echo json_encode($records);

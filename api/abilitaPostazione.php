@@ -27,9 +27,10 @@ if ($conn->error) {
     $rawData = file_get_contents("php://input");
     $data = json_decode($rawData, true);
     $id_postazione = $data['id_postazione'];
-
-    $sql = "UPDATE postazioni SET stato = 0 WHERE id_postazione='$id_postazione'";
-    $result = $conn->query($sql);
+    /*
+        $sql = "UPDATE postazioni SET stato = 0 WHERE id_postazione='$id_postazione'";
+        $result = $conn->query($sql);
+    */
 
     $sql = "UPDATE prenotazioni SET flag = 0 WHERE id_postazione='$id_postazione' and flag = 2";
     $result = $conn->query($sql);

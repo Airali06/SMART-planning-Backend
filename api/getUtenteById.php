@@ -13,7 +13,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit; // Rispondi subito per le richieste preflight
 }
 
-
+$rawData = file_get_contents("php://input");
+$data = json_decode($rawData, true);
+$id_utente = $data['id_utente'];
 
 $conn = new mysqli("localhost", "root", "", "z-planning_db");
 
@@ -24,13 +26,10 @@ if ($conn->error) {
 } else {
 
 
-    $rawData = file_get_contents("php://input");
-    $data = json_decode($rawData, true);
-    $id_coordinatore = $data['id_coordinatore'];
+    $sql = "SELECT id_utente,nome,cognome,genere,username,livello FROM utenti WHERE id_utente = '$id_utente'";
 
-    $sql = "SELECT id_utente, nome, genere, cognome, username, password, livello, id_coordinatore FROM utenti WHERE id_coordinatore='$id_coordinatore'";
+
     $result = $conn->query($sql);
-
     $records = [];
 
     if ($result->num_rows > 0) {
@@ -38,8 +37,8 @@ if ($conn->error) {
             $records[] = $row;
         }
     }
-
     echo json_encode($records);
     $conn->close();
+
 }
 ?>

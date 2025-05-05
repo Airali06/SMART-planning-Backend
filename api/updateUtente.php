@@ -27,6 +27,7 @@ if ($conn->error) {
     $rawData = file_get_contents("php://input");
     $dati = json_decode($rawData, true);
 
+    $id_utente = $dati['id_utente'];
     $nome = $dati['nome'];
     $cognome = $dati['cognome'];
     $genere = $dati['genere'];
@@ -34,7 +35,7 @@ if ($conn->error) {
     $password = $dati['password'];
     $livello = $dati['livello'];
     $id_coordinatore = $dati['id_coordinatore'];
-    $sql = "UPDATE utenti SET nome =  '$nome', cognome =  '$cognome', genere =  '$genere', username = '$username', password = '$password', livello = '$livello', id_coordinatore =  '$id_coordinatore'";
+    $sql = "UPDATE utenti SET nome =  '$nome', cognome =  '$cognome', genere =  '$genere', username = '$username', password = '$password', livello = '$livello', id_coordinatore =  '$id_coordinatore' where id_utente = '$id_utente'";
     $result = $conn->query($sql);
 
     echo json_encode($records);
