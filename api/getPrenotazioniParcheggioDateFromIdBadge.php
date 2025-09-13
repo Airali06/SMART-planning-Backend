@@ -25,37 +25,55 @@ if ($conn->error) {
 
 
     $rawData = file_get_contents("php://input");
-    $data = json_decode($rawData, true);
-    $id_badge = $data['id_badge'];
+    $dati = json_decode($rawData, true);
+    $id_badge = $dati['id_badge'];
+    //$data = date('Y-m-d', strtotime($dati['data']));
     $data = $dati['data'];
     $username = "";
 
-    $sql = "SELECT postazioni.nome FROM badge JOIN utenti on utenti.id_utente = badge.id_utente  WHERE id_badge='$id_badge'";
+    $sql = "SELECT username FROM badge JOIN utenti on utenti.id_utente = badge.id_utente  WHERE id_badge='$id_badge'";
 
     $result = $conn->query($sql);
+
+
+    if (!$result) {
+        // La query ha fallito
+        echo json_encode(['errore' => 'errore']);
+        exit; // interrompe l'esecuzione dello script
+    }
 
     if ($result && $result->num_rows > 0) {
         $row = $result->fetch_assoc();
         $username = $row['username'];
     } else {
         echo json_encode(['errore' => 'errore']);
+        exit;
     }
 
 
 
-    $sql = "SELECT postazioni.nome FROM badge JOIN prenotazioni on prenotazioni.id_utente = badge.id_utente join postazioni on postazioni.id_postazione = prenotazioni.id_prenotazione WHERE id_badge='$id_badge' AND data = '$data' AND postazioni.catecoria = 'C'";
+    $sql = "SELECT postazioni.nome FROM badge JOIN prenotazioni on prenotazioni.id_utente = badge.id_utente join postazioni on postazioni.id_postazione = prenotazioni.id_prenotazione WHERE id_badge='$id_badge' AND data = '$data' AND postazioni.id_categoria ='C'";
 
     $result = $conn->query($sql);
 
     $records = [];
+    $postazioni = "";
 
-    if ($result->num_rows > 0) {
+
+
+    $records = [];
+    if ($result && $result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
             $records[] = $row;
+            $postazioni .= $row['nome'] . ";";
         }
+
+        echo json_encode(["msg" => "OK", "errore" => "NONE"]);
+    } else {
+        echo json_encode(["msg" => "errore", "errore" => "errore"]);
     }
 
-    echo json_encode($records);
+
     $conn->close();
 }
 ?>

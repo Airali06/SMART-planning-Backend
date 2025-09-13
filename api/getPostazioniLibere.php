@@ -26,40 +26,29 @@ if ($conn->error) {
 
     $rawData = file_get_contents("php://input");
     $dati = json_decode($rawData, true);
-    $id_badge = $dati['id_badge'];
-    //$data = date('Y-m-d', strtotime($dati['data']));
     $data = $dati['data'];
-    $username = "";
-
-    $sql = "SELECT username FROM badge JOIN utenti on utenti.id_utente = badge.id_utente  WHERE id_badge='$id_badge'";
-
-    $result = $conn->query($sql);
-
-
-    if (!$result) {
-        // La query ha fallito
-        echo json_encode(['errore' => 'errore']);
-        exit; // interrompe l'esecuzione dello script
-    }
-
-    if ($result && $result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $username = $row['username'];
-    } else {
-        echo json_encode(['errore' => 'errore']);
-        exit;
-    }
 
 
 
-    $sql = "SELECT postazioni.nome FROM badge JOIN prenotazioni on prenotazioni.id_utente = badge.id_utente join postazioni on postazioni.id_postazione = prenotazioni.id_prenotazione WHERE id_badge='$id_badge' AND data = '$data' AND postazioni.id_categoria !='C'";
+    $sql = "SELECT nome 
+    FROM postazioni 
+    WHERE id_postazione NOT IN (
+        SELECT id_prenotazione 
+        FROM prenotazioni 
+        WHERE data = '$data'
+    )
+    AND id_categoria NOT IN ('C', 'B')";
 
     $result = $conn->query($sql);
 
     $records = [];
     $postazioni = "";
 
-
+    if (!$result) {
+        // La query ha fallito
+        echo json_encode(['errore' => 'errore']);
+        exit; // interrompe l'esecuzione dello script
+    }
 
     $records = [];
     if ($result && $result->num_rows > 0) {
@@ -68,9 +57,9 @@ if ($conn->error) {
             $postazioni .= $row['nome'] . ";";
         }
 
-        echo json_encode(["postazioni" => $postazioni, "username" => $username, "errore" => "NONE"]);
+        echo json_encode(["postazioni" => $postazioni, "errore" => "NONE"]);
     } else {
-        echo json_encode(['postazioni' => 'NONE', "username" => $username, "errore" => "NONE"]);
+        echo json_encode(["msg" => "NONE", "errore" => "errore"]);
     }
 
 
