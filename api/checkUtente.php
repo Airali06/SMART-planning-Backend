@@ -1,9 +1,8 @@
 <?php
 header("Access-Control-Allow-Origin: *"); // Permette richieste da qualsiasi dominio (*), cambialo per sicurezza
-header("Access-Control-Allow-Methods:  POST, OPTIONS"); // Metodi consentiti
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS"); // Metodi consentiti
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With"); // Header consentiti
 header("Access-Control-Allow-Credentials: true");
-header("Content-Type: application/json");
 // Pulisce il buffer senza inviarlo
 ob_start();
 ob_end_clean();
@@ -14,8 +13,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 
-
 $conn = new mysqli("localhost", "root", "", "z-planning_db");
+
+
 
 
 if ($conn->error) {
@@ -23,22 +23,21 @@ if ($conn->error) {
     die();
 } else {
 
-    //prende i dati mandati dal client
+
     $rawData = file_get_contents("php://input");
     $data = json_decode($rawData, true);
-    $id_postazione = $data['id_postazione'];
-    /*
-        $sql = "UPDATE postazioni SET stato = 0 WHERE id_postazione='$id_postazione'";
-        $result = $conn->query($sql);
-    */
+    $id_utente = $data['id_utente'];
 
-    $sql = "UPDATE postazioni SET stato = 0 WHERE id_postazione='$id_postazione'";
+    $sql = "SELECT * FROM utenti WHERE id_utente='$id_utente'";
     $result = $conn->query($sql);
 
-    $sql = "UPDATE prenotazioni SET flag = 0 WHERE id_postazione='$id_postazione' and flag = 1";
-    $result = $conn->query($sql);
+    if ($result->num_rows == 0) {
+        $response = ['response' => "0"]; //utente non  trovato
 
-    echo json_encode(['stato' => 'OK']);
-    $conn->close();
+    } else {
+        $response = ['response' => "1"]; //utente trovato
+    }
+    echo json_encode($response);
 }
+
 ?>

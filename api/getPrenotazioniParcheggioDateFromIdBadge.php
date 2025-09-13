@@ -19,26 +19,43 @@ $conn = new mysqli("localhost", "root", "", "z-planning_db");
 
 
 if ($conn->error) {
-    echo json_encode(['errore' => 'nessunrisultato']);
+    echo json_encode(['errore' => 'errore']);
     die();
 } else {
 
-    //prende i dati mandati dal client
+
     $rawData = file_get_contents("php://input");
     $data = json_decode($rawData, true);
-    $id_postazione = $data['id_postazione'];
-    /*
-        $sql = "UPDATE postazioni SET stato = 0 WHERE id_postazione='$id_postazione'";
-        $result = $conn->query($sql);
-    */
+    $id_badge = $data['id_badge'];
+    $data = $dati['data'];
+    $username = "";
 
-    $sql = "UPDATE postazioni SET stato = 0 WHERE id_postazione='$id_postazione'";
+    $sql = "SELECT postazioni.nome FROM badge JOIN utenti on utenti.id_utente = badge.id_utente  WHERE id_badge='$id_badge'";
+
     $result = $conn->query($sql);
 
-    $sql = "UPDATE prenotazioni SET flag = 0 WHERE id_postazione='$id_postazione' and flag = 1";
+    if ($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $username = $row['username'];
+    } else {
+        echo json_encode(['errore' => 'errore']);
+    }
+
+
+
+    $sql = "SELECT postazioni.nome FROM badge JOIN prenotazioni on prenotazioni.id_utente = badge.id_utente join postazioni on postazioni.id_postazione = prenotazioni.id_prenotazione WHERE id_badge='$id_badge' AND data = '$data' AND postazioni.catecoria = 'C'";
+
     $result = $conn->query($sql);
 
-    echo json_encode(['stato' => 'OK']);
+    $records = [];
+
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $records[] = $row;
+        }
+    }
+
+    echo json_encode($records);
     $conn->close();
 }
 ?>
