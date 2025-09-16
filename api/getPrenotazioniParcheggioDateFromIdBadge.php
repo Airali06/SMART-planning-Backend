@@ -52,7 +52,7 @@ if ($conn->error) {
 
 
 
-    $sql = "SELECT postazioni.nome FROM badge JOIN prenotazioni on prenotazioni.id_utente = badge.id_utente join postazioni on postazioni.id_postazione = prenotazioni.id_prenotazione WHERE id_badge='$id_badge' AND data = '$data' AND postazioni.id_categoria ='C'";
+    $sql = "SELECT postazioni.nome FROM badge JOIN prenotazioni on prenotazioni.id_utente = badge.id_utente join postazioni on postazioni.id_postazione = prenotazioni.id_postazione WHERE id_badge='$id_badge' AND data = '$data' AND postazioni.id_categoria ='C'";
 
     $result = $conn->query($sql);
 
