@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 
 
-$conn = new mysqli("localhost", "root", "", "z-planning_db");
+$conn = new mysqli("localhost", "root", "", "SMART-planning_db");
 $rawData = file_get_contents("php://input");
 $data = json_decode($rawData, true);
 $id_postazione = $data['id_postazione'];

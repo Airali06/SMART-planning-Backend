@@ -17,7 +17,7 @@ $rawData = file_get_contents("php://input");
 $data = json_decode($rawData, true);
 $id_utente = $data['id_utente'];
 
-$conn = new mysqli("localhost", "root", "", "z-planning_db");
+$conn = new mysqli("localhost", "root", "", "SMART-planning_db");
 
 
 if ($conn->error) {

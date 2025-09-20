@@ -2,7 +2,7 @@
 header("Access-Control-Allow-Origin: *"); // Permette richieste da qualsiasi dominio (*), cambialo per sicurezza
 header("Access-Control-Allow-Methods:  POST, OPTIONS"); // Metodi consentiti
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With"); // Header consentiti
-header("Access-Control-Allow-Credentials: true"); 
+header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
 // Pulisce il buffer senza inviarlo
 ob_start();
@@ -15,24 +15,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 
 
-        $conn=new mysqli("localhost","root","","z-planning_db");
-              
-
-        if($conn->error) {
-            echo json_encode(['errore' => 'nessunrisultato']);
-            die();
-        }
-        else {
+$conn = new mysqli("localhost", "root", "", "SMART-planning_db");
 
 
-            $rawData = file_get_contents("php://input");
-            $dati = json_decode($rawData, true);
-            $id_prenotazione = $dati['id_prenotazione'];
+if ($conn->error) {
+    echo json_encode(['errore' => 'nessunrisultato']);
+    die();
+} else {
 
-            $sql= "DELETE FROM prenotazioni where id_prenotazione = '$id_prenotazione'";
-            $result=$conn->query($sql);
 
-                echo json_encode(['stato' => 'OK']);
-                $conn->close();
-        }
+    $rawData = file_get_contents("php://input");
+    $dati = json_decode($rawData, true);
+    $id_prenotazione = $dati['id_prenotazione'];
+
+    $sql = "DELETE FROM prenotazioni where id_prenotazione = '$id_prenotazione'";
+    $result = $conn->query($sql);
+
+    echo json_encode(['stato' => 'OK']);
+    $conn->close();
+}
 ?>

@@ -2,7 +2,7 @@
 header("Access-Control-Allow-Origin: *"); // Permette richieste da qualsiasi dominio (*), cambialo per sicurezza
 header("Access-Control-Allow-Methods:  POST, OPTIONS"); // Metodi consentiti
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With"); // Header consentiti
-header("Access-Control-Allow-Credentials: true"); 
+header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
 
 // Pulisce il buffer senza inviarlo
@@ -19,12 +19,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 // Connessione al database
-$conn = new mysqli("localhost", "root", "", "z-planning_db");
+$conn = new mysqli("localhost", "root", "", "SMART-planning_db");
 
 // Ricezione dei dati JSON inviati nella richiesta
 $rawData = file_get_contents("php://input");
 $dati = json_decode($rawData, true);
-$data = $dati['data']; 
+$data = $dati['data'];
 
 // Verifica se ci sono errori nella connessione
 if ($conn->error) {

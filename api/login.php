@@ -33,7 +33,7 @@ function getFutureTimestamp($minutidopo)
 }
 
 
-$conn = new mysqli("localhost", "root", "", "z-planning_db");
+$conn = new mysqli("localhost", "root", "", "SMART-planning_db");
 
 
 

@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 
-$conn = new mysqli("localhost", "root", "", "z-planning_db");
+$conn = new mysqli("localhost", "root", "", "SMART-planning_db");
 
 
 
